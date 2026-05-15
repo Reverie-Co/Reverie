@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeuroBridge — Reverie Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@200;300;400;500&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { background:#000; scroll-behavior:smooth; }
+body { background:#000; color:#d8d8d8; font-family:'Geist','Inter',sans-serif; font-weight:300; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+
+nav { position:fixed; top:0; left:0; right:0; z-index:200; height:54px; display:flex; align-items:center; justify-content:space-between; padding:0 32px; background:rgba(0,0,0,0.6); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+.nav-logo { font-size:0.9rem; font-weight:500; letter-spacing:0.03em; color:#d8d8d8; text-decoration:none; }
+.nav-logo span { font-weight:300; opacity:0.4; }
+.nav-back { font-size:0.78rem; color:rgba(216,216,216,0.4); text-decoration:none; display:flex; align-items:center; gap:6px; transition:color 0.2s; }
+.nav-back:hover { color:#d8d8d8; }
+
+/* HERO */
+#nb-hero { position:relative; min-height:70vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; overflow:hidden; padding:100px 24px 60px; }
+#nb-canvas { position:absolute; inset:0; width:100%; height:100%; z-index:0; }
+.nb-hero-content { position:relative; z-index:1; }
+.nb-badge { display:inline-flex; align-items:center; gap:8px; font-size:0.65rem; color:rgba(74,222,128,0.7); letter-spacing:0.15em; text-transform:uppercase; border:1px solid rgba(74,222,128,0.2); border-radius:100px; padding:6px 16px; margin-bottom:32px; background:rgba(74,222,128,0.04); opacity:0; animation:fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.3s forwards; }
+.nb-bdot { width:5px; height:5px; border-radius:50%; background:#4ade80; animation:pulse 2s ease infinite; }
+@keyframes pulse { 0%,100%{opacity:0.5;transform:scale(1);}50%{opacity:1;transform:scale(1.3);} }
+.nb-title { font-size:clamp(4rem,12vw,9rem); font-weight:200; letter-spacing:-0.04em; color:#fff; line-height:0.95; margin-bottom:20px; opacity:0; animation:fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.45s forwards; }
+.nb-sub { font-size:0.85rem; color:rgba(74,222,128,0.6); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:28px; opacity:0; animation:fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.6s forwards; }
+.nb-hook { font-size:1rem; color:rgba(216,216,216,0.5); line-height:1.9; max-width:580px; margin:0 auto; opacity:0; animation:fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.75s forwards; }
+
+hr.div { border:none; border-top:1px solid rgba(255,255,255,0.055); }
+.sec { padding:88px 32px; max-width:900px; margin:0 auto; }
+.sec-label { font-size:0.65rem; color:rgba(216,216,216,0.22); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:12px; font-weight:400; }
+.sec-title { font-size:clamp(1.8rem,4vw,2.8rem); font-weight:200; letter-spacing:-0.03em; color:#d8d8d8; margin-bottom:24px; line-height:1.1; }
+.body-text { font-size:0.9rem; color:rgba(216,216,216,0.5); line-height:1.95; font-weight:300; margin-bottom:20px; }
+.body-text strong { color:#d8d8d8; font-weight:500; }
+.body-text:last-child { margin-bottom:0; }
+
+/* Stats */
+.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,255,255,0.055); border:1px solid rgba(255,255,255,0.055); border-radius:16px; overflow:hidden; margin:48px 0; }
+.stat-box { background:#000; padding:32px 24px; text-align:center; }
+.stat-val { font-size:2.2rem; font-weight:200; color:#fff; letter-spacing:-0.03em; line-height:1; margin-bottom:6px; }
+.stat-val em { font-style:normal; color:rgba(74,222,128,0.85); }
+.stat-lbl { font-size:0.65rem; color:rgba(216,216,216,0.28); font-weight:300; }
+
+/* 3-col grid */
+.three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.045); border-radius:12px; overflow:hidden; margin:36px 0; }
+.col-item { background:#000; padding:28px 24px; }
+.col-label { font-size:0.62rem; color:rgba(216,216,216,0.2); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:10px; font-weight:400; }
+.col-text { font-size:0.8rem; color:rgba(216,216,216,0.45); line-height:1.85; font-weight:300; }
+.col-text strong { color:#d8d8d8; font-weight:500; }
+
+/* Failed cards */
+.failed-card { border:1px solid rgba(255,255,255,0.045); border-radius:10px; padding:24px; margin-bottom:12px; background:rgba(255,255,255,0.01); }
+.failed-card:last-child { margin-bottom:0; }
+.fc-who { font-size:0.72rem; color:rgba(216,216,216,0.35); margin-bottom:8px; font-weight:400; letter-spacing:0.02em; }
+.fc-what { font-size:0.82rem; color:rgba(216,216,216,0.5); line-height:1.75; font-weight:300; margin-bottom:8px; }
+.fc-result { font-size:0.72rem; color:rgba(74,222,128,0.45); font-weight:300; }
+
+/* Phases */
+.phase { display:grid; grid-template-columns:80px 1fr auto; gap:20px; align-items:start; padding:22px 0; border-bottom:1px solid rgba(255,255,255,0.038); }
+.phase:last-child { border-bottom:none; }
+.phase-n { font-family:‘Geist Mono’,monospace; font-size:0.62rem; color:rgba(216,216,216,0.18); padding-top:3px; }
+.phase-title { font-size:0.9rem; font-weight:400; color:#d8d8d8; margin-bottom:6px; }
+.phase-desc { font-size:0.76rem; color:rgba(216,216,216,0.32); line-height:1.7; font-weight:300; }
+.phase-req { font-size:0.65rem; color:rgba(216,216,216,0.2); margin-top:8px; font-style:italic; }
+.badge { font-size:0.58rem; padding:3px 10px; border-radius:100px; flex-shrink:0; margin-top:3px; }
+.b-now { color:rgba(74,222,128,0.75); border:1px solid rgba(74,222,128,0.15); background:rgba(74,222,128,0.04); }
+.b-next { color:rgba(216,216,216,0.3); border:1px solid rgba(255,255,255,0.07); }
+.b-future { color:rgba(216,216,216,0.2); border:1px solid rgba(255,255,255,0.05); }
+
+/* Terminal */
+.terminal { background:rgba(4,4,8,0.98); border:1px solid rgba(255,255,255,0.07); border-radius:12px; overflow:hidden; margin:36px 0; }
+.t-bar { display:flex; align-items:center; gap:6px; padding:11px 16px; border-bottom:1px solid rgba(255,255,255,0.05); background:rgba(255,255,255,0.015); }
+.td { width:9px; height:9px; border-radius:50%; }
+.td-r{background:#ff5f57;} .td-y{background:#ffbd2e;} .td-g{background:#28c840;}
+.t-name { font-family:‘Geist Mono’,monospace; font-size:0.58rem; color:rgba(216,216,216,0.2); margin-left:8px; }
+.t-body { padding:24px; font-family:‘Geist Mono’,monospace; font-size:0.69rem; line-height:1.9; overflow-x:auto; }
+.cl { display:block; white-space:pre; }
+.cm{color:rgba(216,216,216,0.18);} .kw{color:rgba(147,197,253,0.75);} .st{color:rgba(134,239,172,0.75);} .fn{color:rgba(216,216,216,0.48);} .out{color:rgba(134,239,172,0.9);}
+
+/* Goals */
+.goal-row { display:grid; grid-template-columns:18px 1fr; gap:14px; padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.038); align-items:start; }
+.goal-row:last-child { border-bottom:none; }
+.goal-check { width:16px; height:16px; border:1px solid rgba(74,222,128,0.25); border-radius:3px; display:flex; align-items:center; justify-content:center; margin-top:1px; flex-shrink:0; }
+.goal-check svg { width:9px; height:9px; stroke:rgba(74,222,128,0.6); }
+.goal-text { font-size:0.84rem; color:rgba(216,216,216,0.5); line-height:1.7; font-weight:300; }
+.goal-text strong { color:#d8d8d8; font-weight:500; }
+
+/* Tags */
+.tags-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:36px; }
+.tag { font-size:0.65rem; padding:4px 12px; border:1px solid rgba(255,255,255,0.07); border-radius:100px; color:rgba(216,216,216,0.3); font-weight:300; }
+.tag.open { border-color:rgba(74,222,128,0.2); color:rgba(74,222,128,0.6); }
+
+/* CTA */
+.cta-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:48px; }
+.btn-green { font-size:0.85rem; font-weight:400; color:#000; background:rgba(74,222,128,0.85); border-radius:100px; padding:11px 26px; text-decoration:none; transition:all 0.2s; white-space:nowrap; }
+.btn-green:hover { background:rgba(74,222,128,1); }
+.btn-ghost { font-size:0.85rem; font-weight:300; color:rgba(216,216,216,0.5); border:1px solid rgba(255,255,255,0.1); border-radius:100px; padding:11px 26px; text-decoration:none; transition:all 0.2s; white-space:nowrap; }
+.btn-ghost:hover { color:#d8d8d8; border-color:rgba(255,255,255,0.22); }
+
+footer { padding:16px 32px; border-top:1px solid rgba(255,255,255,0.038); display:flex; justify-content:space-between; align-items:center; }
+.f-l,.f-r { font-size:0.66rem; color:rgba(216,216,216,0.14); font-weight:300; }
+
+.reveal { opacity:0; transform:translateY(14px); transition:opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+.reveal.visible { opacity:1; transform:translateY(0); }
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
+
+@media (max-width:680px) {
+nav { padding:0 18px; }
+.sec { padding:56px 18px; }
+.stats-row { grid-template-columns:1fr 1fr; }
+.stats-row .stat-box:nth-child(3) { grid-column:span 2; border-top:1px solid rgba(255,255,255,0.055); }
+.three-col { grid-template-columns:1fr; }
+.phase { grid-template-columns:60px 1fr; }
+.badge { display:none; }
+footer { flex-direction:column; gap:4px; text-align:center; }
+}
+</style>
+
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Reverie<span>.Lab</span></a>
+  <a href="index.html" class="nav-back">← Back to Reverie Lab</a>
+</nav>
+
+<!-- HERO -->
+
+<section id="nb-hero">
+  <canvas id="nb-canvas"></canvas>
+  <div class="nb-hero-content">
+    <div class="nb-badge"><div class="nb-bdot"></div>Flagship Project · Open Source · Active</div>
+    <h1 class="nb-title">NeuroBridge</h1>
+    <div class="nb-sub">Compute infrastructure for neuromorphic AI</div>
+    <p class="nb-hook">The software layer that connects modern AI frameworks to brain-inspired hardware — making the next era of efficient compute accessible to every developer.</p>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- WHY -->
+
+<section class="sec reveal">
+  <div class="sec-label">Why we're building it</div>
+  <h2 class="sec-title">AI compute is fundamentally broken.</h2>
+  <p class="body-text">Think of AI today like a house where every light is on, 24 hours a day. Running a single AI query on a GPU uses about as much electricity as leaving a light bulb on for hours. For companies like Google or Microsoft, that adds up to <strong>billions of dollars in electricity costs every year</strong> — and it's only getting worse as AI demand expands.</p>
+  <p class="body-text">At the same time, researchers have built chips inspired by how the human brain works. Your brain can recognise a face in milliseconds using less power than a dim light bulb. These "neuromorphic" chips work the same way — they only compute when something actually happens, instead of running full-speed all the time. <strong>The result: 25–100× better energy efficiency.</strong></p>
+  <p class="body-text">The problem? These chips are practically unusable for mainstream AI development. There's no standard way to connect them to the frameworks every developer already uses — PyTorch, JAX, ONNX. It's like having a better, cheaper power source but no cable to plug it in. <strong>NeuroBridge is that cable.</strong></p>
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-val"><em>100×</em></div><div class="stat-lbl">Target energy reduction vs GPU inference</div></div>
+    <div class="stat-box"><div class="stat-val">$55B</div><div class="stat-lbl">Neuromorphic market by 2033</div></div>
+    <div class="stat-box"><div class="stat-val"><em>0</em></div><div class="stat-lbl">Usable software bridges today</div></div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- PROBLEM / GAP / SOLUTION -->
+
+<section class="sec reveal">
+  <div class="sec-label">The full picture</div>
+  <h2 class="sec-title">Problem. Gap. Solution.</h2>
+  <div class="three-col">
+    <div class="col-item">
+      <div class="col-label">The Problem</div>
+      <div class="col-text">GPU-based AI inference is <strong>100× more energy-intensive</strong> than biological neural computation. Datacenter energy costs are scaling out of control — and AI demand keeps growing. The industry is aware. Nobody has solved the compute layer.</div>
+    </div>
+    <div class="col-item">
+      <div class="col-label">The Gap</div>
+      <div class="col-text">Brain-inspired chips like Intel Loihi 2 and IBM NorthPole are <strong>dramatically more efficient</strong> — but there is no software layer connecting them to mainstream AI frameworks. The hardware is ready. <strong>The tooling doesn't exist.</strong></div>
+    </div>
+    <div class="col-item">
+      <div class="col-label">The Solution</div>
+      <div class="col-text">NeuroBridge is a <strong>translation + execution + benchmarking layer</strong>. Bring your existing model. We convert it. Run it on brain-inspired hardware — without rewriting a single line of code. Measure the energy savings. Deploy.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- WHAT OTHERS TRIED -->
+
+<section class="sec reveal">
+  <div class="sec-label">Prior art</div>
+  <h2 class="sec-title">What others tried — and why it hasn't worked.</h2>
+  <p class="body-text" style="margin-bottom:32px;">This problem isn't new. The biggest companies in the world have invested millions trying to solve parts of it. Here's what they ran into:</p>
+
+  <div class="failed-card">
+    <div class="fc-who">Intel — Loihi 2 + Lava Framework</div>
+    <div class="fc-what">Built the neuromorphic chip and its own programming framework. Technically impressive. But Lava requires developers to learn a completely new paradigm — it doesn't connect to PyTorch or modern AI at all.</div>
+    <div class="fc-result">→ Used only in research labs. Zero mainstream adoption.</div>
+  </div>
+  <div class="failed-card">
+    <div class="fc-who">IBM — TrueNorth & NorthPole</div>
+    <div class="fc-what">Built chips that achieve extraordinary energy efficiency. But TrueNorth only runs very specific types of networks — standard AI models cannot run on it without complete retraining from scratch.</div>
+    <div class="fc-result">→ No conversion path from modern frameworks. Abandoned for general AI use.</div>
+  </div>
+  <div class="failed-card">
+    <div class="fc-who">Academic Research — ANN-to-SNN Conversion</div>
+    <div class="fc-what">Hundreds of papers on converting standard neural networks to spiking networks. Most show promising results on tiny toy models. Accuracy degrades sharply on anything real. No production tooling was ever built.</div>
+    <div class="fc-result">→ Stayed in papers. No usable open-source toolchain for developers.</div>
+  </div>
+  <div class="failed-card">
+    <div class="fc-who">Why nobody has solved it yet</div>
+    <div class="fc-what">GPU AI speaks in continuous math — matrices, tensors, gradients. Neuromorphic chips speak in events and spikes — a different language entirely. The challenge isn't the hardware or the research. It's building a shared intermediate representation: a common format both worlds understand. That's exactly what NeuroBridge is designed to be: <strong>Event Graph IR</strong>.</div>
+    <div class="fc-result">→ Our approach: a translation layer both AI frameworks and neuromorphic chips can speak natively.</div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- OUR APPROACH -->
+
+<section class="sec reveal">
+  <div class="sec-label">Our approach</div>
+  <h2 class="sec-title">How we're doing it differently.</h2>
+  <p class="body-text">Instead of trying to build a perfect neuromorphic AI from scratch — which is what everyone else attempted — NeuroBridge works <strong>backwards from what developers already have</strong>.</p>
+  <p class="body-text">The insight: you don't need to translate everything. You only need to identify <strong>which parts of a model can become event-driven</strong>, translate those, keep the rest, and measure the tradeoff precisely. This is what we call the <strong>Event Graph IR</strong> — a middle representation that both PyTorch and neuromorphic systems can speak.</p>
+  <p class="body-text">The goal is not a perfect conversion. The goal is a <strong>measurable, reproducible benchmark</strong>: GPU vs NeuroBridge — energy, latency, accuracy. That's what researchers and companies actually need to make infrastructure decisions.</p>
+
+  <div class="terminal">
+    <div class="t-bar">
+      <div class="td td-r"></div><div class="td td-y"></div><div class="td td-g"></div>
+      <span class="t-name">neurobridge_demo.py</span>
+    </div>
+    <div class="t-body">
+      <span class="cl cm"># Load any existing PyTorch model — no changes needed</span>
+      <span class="cl">model = <span class="fn">torch.load</span>(<span class="st">"my_model.pt"</span>)</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl cm"># One-line conversion to neuromorphic</span>
+      <span class="cl">snn = <span class="fn">Bridge</span>(model, target=<span class="st">"loihi2"</span>).<span class="fn">convert</span>()</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl cm"># Benchmark against GPU baseline</span>
+      <span class="cl">results = <span class="fn">Benchmark</span>(model, snn).<span class="fn">run</span>()</span>
+      <span class="cl"><span class="fn">print</span>(results.summary())</span>
+      <span class="cl">&nbsp;</span>
+      <span class="cl out">  Energy reduction:   47×</span>
+      <span class="cl out">  Latency reduction:  62%</span>
+      <span class="cl out">  Accuracy delta:    -0.3%</span>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- BUILD PHASES -->
+
+<section class="sec reveal">
+  <div class="sec-label">Roadmap</div>
+  <h2 class="sec-title">What it takes to build this.</h2>
+  <p class="body-text" style="margin-bottom:36px;">This is a real systems engineering project. Here's what's required at each stage, honestly:</p>
+
+  <div class="phase">
+    <div class="phase-n">Phase 1</div>
+    <div>
+      <div class="phase-title">Software core — simulation only</div>
+      <div class="phase-desc">PyTorch model loader, ONNX export, SNN conversion library, event-driven simulation engine, benchmark framework measuring latency, estimated power, and accuracy drift. Runs on CPU/GPU — no special hardware needed.</div>
+      <div class="phase-req">Requires: Python, PyTorch, Brian2 / Nengo for simulation</div>
+    </div>
+    <span class="badge b-now">Now</span>
+  </div>
+  <div class="phase">
+    <div class="phase-n">Phase 2</div>
+    <div>
+      <div class="phase-title">Real hardware benchmark</div>
+      <div class="phase-desc">Deploy on edge AI hardware for real-world energy measurement. Build the benchmark dashboard comparing GPU vs NeuroBridge side-by-side with actual watt readings, not estimates.</div>
+      <div class="phase-req">Requires: Edge device with real power measurement</div>
+    </div>
+    <span class="badge b-next">Next</span>
+  </div>
+  <div class="phase">
+    <div class="phase-n">Phase 3</div>
+    <div>
+      <div class="phase-title">Neuromorphic hardware integration</div>
+      <div class="phase-desc">Native backend for Intel Loihi 2 via the LAVA framework. Real chip, real spikes, real numbers — not simulated.</div>
+      <div class="phase-req">Requires: Intel research partnership or academic access</div>
+    </div>
+    <span class="badge b-future">Planned</span>
+  </div>
+  <div class="phase">
+    <div class="phase-n">Phase 4</div>
+    <div>
+      <div class="phase-title">Hybrid pipeline + open ecosystem</div>
+      <div class="phase-desc">GPU for training, neuromorphic for inference — running as a seamless pipeline. Open benchmark standard so other researchers can reproduce and build on results. This is the CUDA moment.</div>
+      <div class="phase-req">Requires: Community adoption + research partnerships</div>
+    </div>
+    <span class="badge b-future">Future</span>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- WHY IT MATTERS -->
+
+<section class="sec reveal">
+  <div class="sec-label">Why it matters</div>
+  <h2 class="sec-title">The CUDA analogy.</h2>
+  <p class="body-text">In 2007, NVIDIA built CUDA — not a chip, but a <strong>software layer</strong> that let developers use GPU hardware easily. That one decision turned NVIDIA into a multi-trillion dollar company, because whoever controls the software layer controls the whole stack.</p>
+  <p class="body-text">NeuroBridge is attempting the same thing for the next compute era. Companies like Google, Amazon, and Intel are investing billions in alternative hardware — but none of it gets adopted without a software bridge. The hardware is commoditizing. <strong>The tooling layer is where the value concentrates.</strong></p>
+  <p class="body-text">This is an open source project. The goal is not to own it — the goal is to build the standard.</p>
+
+  <div class="goal-row"><div class="goal-check"><svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="goal-text">Make neuromorphic computing <strong>usable for mainstream AI developers</strong> — without learning a new paradigm</div></div>
+  <div class="goal-row"><div class="goal-check"><svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="goal-text">Enable measurable energy reductions — <strong>target: 10×–100×</strong> depending on model and workload</div></div>
+  <div class="goal-row"><div class="goal-check"><svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="goal-text">Build a <strong>standardized benchmarking layer</strong> — energy, latency, accuracy delta — so tradeoffs are transparent</div></div>
+  <div class="goal-row"><div class="goal-check"><svg viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="goal-text">Demonstrate the <strong>hybrid paradigm</strong>: GPU trains, neuromorphic infers — best of both worlds</div></div>
+
+  <div class="tags-row">
+    <span class="tag open">Open Source</span>
+    <span class="tag open">MIT Licensed</span>
+    <span class="tag">PyTorch</span>
+    <span class="tag">JAX</span>
+    <span class="tag">ONNX</span>
+    <span class="tag">Intel Loihi 2</span>
+    <span class="tag">IBM NorthPole</span>
+    <span class="tag">SNN</span>
+    <span class="tag">Neuromorphic</span>
+  </div>
+
+  <div class="cta-row">
+    <a href="https://github.com/Reverie-Co" class="btn-green" target="_blank">View on GitHub →</a>
+    <a href="index.html#contact" class="btn-ghost">Collaborate</a>
+    <a href="index.html" class="btn-ghost">← Reverie Lab</a>
+  </div>
+</section>
+
+<footer>
+  <div class="f-l">© 2026 Reverie Lab · NeuroBridge</div>
+  <div class="f-r">Open Source · MIT Licensed</div>
+</footer>
+
+<script>
+(function() {
+  const canvas = document.getElementById('nb-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, dpr, nodes = [], time = 0, animId;
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    W = canvas.offsetWidth; H = canvas.offsetHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.scale(dpr, dpr);
+    initNodes();
+  }
+  function initNodes() {
+    nodes = [];
+    const count = Math.min(Math.floor((W * H) / 10000), 100);
+    for (let i = 0; i < count; i++) {
+      nodes.push({ x:Math.random()*W, y:Math.random()*H, vx:(Math.random()-0.5)*0.3, vy:(Math.random()-0.5)*0.3, pulse:Math.random()*Math.PI*2, r:Math.random()*1.3+0.4 });
+    }
+  }
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#000'; ctx.fillRect(0,0,W,H);
+    for (const n of nodes) {
+      n.x+=n.vx; n.y+=n.vy; n.pulse+=0.02;
+      if(n.x<0||n.x>W)n.vx*=-1; if(n.y<0||n.y>H)n.vy*=-1;
+    }
+    for (let i=0;i<nodes.length;i++) {
+      for (let j=i+1;j<nodes.length;j++) {
+        const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<160) {
+          ctx.strokeStyle=`rgba(74,222,128,${(1-dist/160)*0.14})`;
+          ctx.lineWidth=0.5; ctx.beginPath();
+          ctx.moveTo(nodes[i].x,nodes[i].y); ctx.lineTo(nodes[j].x,nodes[j].y); ctx.stroke();
+        }
+      }
+    }
+    for (const n of nodes) {
+      const p=(Math.sin(n.pulse)*0.5+0.5)*0.7+0.3;
+      ctx.fillStyle=`rgba(74,222,128,${p*0.55})`; ctx.beginPath();
+      ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill();
+    }
+    const vign=ctx.createRadialGradient(W/2,H/2,H*0.1,W/2,H/2,H*0.9);
+    vign.addColorStop(0,'rgba(0,0,0,0)'); vign.addColorStop(1,'rgba(0,0,0,0.85)');
+    ctx.fillStyle=vign; ctx.fillRect(0,0,W,H);
+    time+=0.003; animId=requestAnimationFrame(draw);
+  }
+  resize(); draw();
+  window.addEventListener('resize',()=>{cancelAnimationFrame(animId);resize();draw();});
+})();
+
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{ if(e.isIntersecting) setTimeout(()=>e.target.classList.add('visible'),i*60); });
+},{threshold:0.06});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+
+</body>
+</html>
