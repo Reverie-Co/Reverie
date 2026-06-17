@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Tiger's Rainbow — Reverie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@200;300;400;500;600&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#000;--text:#d8d8d8;--white:#fff;--dim:rgba(216,216,216,0.45);--faint:rgba(216,216,216,0.22);
+    --line:rgba(255,255,255,0.055);--line2:rgba(255,255,255,0.10);--acc:#4ade80;--acc-soft:rgba(74,222,128,0.6);--glow:rgba(74,222,128,0.12);--ease:cubic-bezier(0.16,1,0.3,1);}
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;background:#000;color-scheme:dark;}
+  body{background:var(--bg);color:var(--text);font-family:'Geist',system-ui,sans-serif;font-weight:300;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+  a{text-decoration:none;color:inherit;} .mono{font-family:'Geist Mono',monospace;}
+  ::selection{background:var(--acc);color:#000;}
+  #prog{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--acc),#22d3ee);z-index:300;box-shadow:0 0 12px var(--acc);transition:width .1s linear;}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:200;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,5vw,32px);background:rgba(0,0,0,0.5);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+  .logo{font-size:0.9rem;font-weight:500;letter-spacing:0.03em;color:var(--text);} .logo span{font-weight:300;opacity:0.4;}
+  .back{font-family:'Geist Mono',monospace;font-size:0.74rem;color:var(--dim);transition:color .2s;} .back:hover{color:var(--acc);}
+
+  header.hero{position:relative;padding:150px 24px 90px;text-align:center;overflow:hidden;background:radial-gradient(120% 70% at 50% 0%,rgba(10,40,28,0.45),#000 65%);}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-family:'Geist Mono',monospace;font-size:0.66rem;color:var(--acc-soft);letter-spacing:0.16em;text-transform:uppercase;border:1px solid var(--line2);border-radius:100px;padding:6px 16px;margin-bottom:34px;}
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--acc);}
+  h1{font-size:clamp(2.4rem,6.5vw,4.6rem);font-weight:200;letter-spacing:-0.035em;color:var(--white);line-height:1.06;max-width:18ch;margin:0 auto;}
+  .sub{font-size:clamp(1.05rem,2.2vw,1.3rem);color:var(--dim);font-weight:300;max-width:46ch;margin:28px auto 0;line-height:1.6;}
+  .meta{font-family:'Geist Mono',monospace;font-size:0.7rem;color:var(--faint);letter-spacing:0.08em;margin-top:34px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+
+  article{max-width:660px;margin:0 auto;padding:10px 24px 100px;}
+  article p{font-size:1.06rem;line-height:1.95;color:rgba(216,216,216,0.7);font-weight:300;margin-bottom:24px;}
+  article p strong{color:var(--text);font-weight:500;}
+  article p em{font-style:normal;color:var(--acc);}
+  article h2{font-size:clamp(1.5rem,3.2vw,2rem);font-weight:300;color:var(--white);letter-spacing:-0.02em;margin:64px 0 26px;line-height:1.25;}
+  article h2:first-of-type{margin-top:46px;}
+  .hl{font-size:clamp(1.3rem,2.6vw,1.7rem);font-weight:200;color:var(--white);line-height:1.45;letter-spacing:-0.01em;margin:42px 0;padding-left:22px;border-left:2px solid var(--acc);}
+  .hl em{font-style:normal;color:var(--acc);}
+  article hr{border:none;border-top:1px solid var(--line);margin:64px 0;}
+
+  .endcap{max-width:660px;margin:0 auto;padding:0 24px 110px;text-align:center;}
+  .endcap .rule{border-top:1px solid var(--line);margin-bottom:50px;}
+  .endcap p{font-size:1.1rem;color:var(--dim);line-height:1.8;margin-bottom:34px;}
+  .ctarow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .btn{font-size:0.85rem;border-radius:100px;padding:11px 26px;white-space:nowrap;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+  .btn-p{font-weight:400;color:#000;background:var(--text);} .btn-p:hover{background:var(--white);}
+  .btn-g{font-weight:300;color:var(--dim);border:1px solid var(--line2);} .btn-g:hover{color:var(--text);border-color:var(--text);}
+
+  footer{padding:18px clamp(20px,6vw,28px);border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;}
+  footer div{font-family:'Geist Mono',monospace;font-size:0.66rem;color:var(--faint);}
+
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .9s var(--ease),transform .9s var(--ease);} .reveal.in{opacity:1;transform:none;}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+
+<nav>
+  <a href="index.html" class="logo">Reverie</a>
+  <a href="index.html#notes" class="back">&larr; Field Notes</a>
+</nav>
+
+<header class="hero">
+  <div class="kicker"><span class="dot"></span>Field Notes &middot; Mind &amp; AI</div>
+  <h1>The Tiger's Rainbow</h1>
+  <p class="sub">What I learned arguing with AI about the limits of minds.</p>
+  <div class="meta"><span>2026</span><span>&middot;</span><span>Maria Sheikh</span></div>
+</header>
+
+<article>
+  <p class="reveal">I keep coming back to one image. A tiger can physically see the night sky. Stars, the moon, all of it sits right there in its field of vision every single night. And yet no tiger has ever built astronomy. Not because it's missing data &mdash; the photons are hitting its retina exactly as they hit ours &mdash; but because its mind never had a reason to turn "lights in the sky" into orbits, distance, and physics. The information is there. The <em>concept</em> never arrives.</p>
+  <p class="reveal">That image is the seed of everything in this essay. I want to walk through where it led me, and what I found out actually exists in research already, once I went looking for the names of things.</p>
+
+  <h2 class="reveal">The animal that doesn't know it's missing something</h2>
+  <p class="reveal">There's an old term for this, from a biologist named Jakob von Uexküll in the early 1900s: <strong>Umwelt</strong>. The idea is that every organism doesn't experience "the world" &mdash; it experiences its own narrow slice of the world, built entirely from what its senses and nervous system can register. A tick's Umwelt is built from butyric acid and warmth. A bat's is built from echo timing. A human's is built from roughly 400&ndash;700 nanometers of light, audible sound, and a handful of other channels &mdash; and that's it. We don't experience reality. We experience our Umwelt, and we mistake it for reality because it's the only one we've ever had access to.</p>
+  <p class="reveal">The philosopher Colin McGinn pushed this further with a concept called <strong>cognitive closure</strong> &mdash; the idea that some truths might be permanently inaccessible to a given kind of mind, not because of missing information, but because of missing cognitive machinery. A dog will never derive quantum mechanics no matter how long you leave it staring at the equations, and that's not a failure of patience. Immanuel Kant got at the same wall two and a half centuries earlier, with his distinction between <strong>phenomena</strong> (the world as it appears to a mind, filtered through that mind's apparatus) and the <strong>noumenal</strong> world &mdash; the thing-in-itself, independent of any observer, which he argued we can never directly touch.</p>
+  <p class="reveal">So here's the question that actually keeps me up: if every other species on this planet has a bounded reality &mdash; a closure they can't see past &mdash; what makes us so sure we're the exception?</p>
+
+  <h2 class="reveal">We already know we're not seeing everything</h2>
+  <p class="reveal">This isn't even speculative. It's measurable, right now, in this room. Visible light is a tiny sliver of the full electromagnetic spectrum. Infrared, ultraviolet, radio waves &mdash; they're passing through your body constantly and you have zero subjective access to any of it. Bees see ultraviolet patterns painted on flower petals that are completely invisible to us, on the exact same flower we're both looking at. Some birds and sharks have a literal sense organ for Earth's magnetic field &mdash; <strong>magnetoreception</strong> &mdash; that lets them feel direction the way we feel warmth on skin. We don't have a weaker version of that sense. We have none.</p>
+  <p class="reveal">That's the easy version of the problem, though, and it's already been solved before, repeatedly, across history. Before microscopes, microbes were invisible. Before telescopes, galaxies were invisible. Before heliocentric math, the structure of the solar system was invisible. Reality didn't change in any of those moments &mdash; the instrument did. We built a new sensor, and a previously inaccessible layer of the world became ordinary.</p>
+  <p class="reveal">The harder version is the one with no instrument fix: missing a <em>concept</em>, not a sensor. More data doesn't help if you don't have the categorical machinery to turn it into a thought. Showing a tiger a textbook full of star charts wouldn't make it an astronomer. That's the kind of gap no telescope closes, because the problem isn't reception &mdash; it's interpretation.</p>
+
+  <h2 class="reveal">Could a mind built by us ever see past us?</h2>
+  <p class="reveal">This is where it gets genuinely strange, because building a mind designed to think outside human concepts runs into something close to a logical trap: how do you specify "think outside human thought" using anything other than human thought? You can't grade an exam in a language you don't speak. Kurt Gödel ran into a structurally identical wall in mathematics in 1931 &mdash; a system strong enough to be interesting can't fully verify its own consistency from purely inside itself. You need a vantage point outside the system, and by definition you don't have access to one outside your own mind.</p>
+  <p class="reveal">But there's a real escape route, and it's the same mechanism that produced <em>us</em> in the first place: evolution. Nobody designed the human brain top-down. Blind, undirected natural selection &mdash; with no foresight, no concept of consciousness, no goal &mdash; still produced something that exceeds it. It bootstrapped upward through iteration and selection pressure rather than through a designer who already understood the destination.</p>
+  <p class="reveal">This is already an active research direction, not a thought experiment. OpenAI's 2019 "Emergent Tool Use" experiment dropped agents into a simple hide-and-seek environment with no human examples and just a reward signal. After roughly 500 million rounds of play, the agents independently invented six distinct strategies nobody coded in &mdash; building shelters out of movable boxes, then discovering they could use ramps to climb over walls, then learning to disable the ramps before the opposing team could use them. None of that was demonstrated to them. It emerged from competitive pressure alone. DeepMind extended this idea further with an environment called <strong>XLand</strong>, designed to train agents across a vast, procedurally generated space of games and tasks rather than one narrow one, looking for the same kind of unprompted strategic invention at much larger scale.</p>
+  <p class="reveal">The honest caveat: humans still chose the reward signal, the physics, the rules of the sandbox. We'd be designing the riverbanks, not the water. That's a partial escape from the circularity problem, not a clean one.</p>
+
+  <h2 class="reveal">Has AI ever actually discovered something new?</h2>
+  <p class="reveal">I wanted a real answer to this, not a vibe. There are concrete cases, and they're genuinely impressive &mdash; and also genuinely bounded. <strong>AlphaZero</strong>, from DeepMind, learned the board game Go entirely through self-play, with zero human game data, and found strategies professional players had never used in centuries of recorded play &mdash; moves that looked wrong by human intuition and turned out to be objectively stronger. <strong>AlphaTensor</strong>, also DeepMind, found a faster algorithm for matrix multiplication that mathematicians hadn't managed to improve on in over fifty years of trying. <strong>GNoME</strong>, again DeepMind, predicted hundreds of thousands of new stable crystal structures &mdash; materials nobody had synthesized or even hypothesized before. <strong>AlphaProof</strong> reached silver-medal-equivalent performance on International Mathematical Olympiad problems, using a formal proof-verification language called <strong>Lean</strong> to mechanically check every logical step of a proof with zero human judgment involved. That last detail matters more than it sounds: it's the piece that makes a fully autonomous "AI does new math while we just watch" scenario actually possible, because something other than a human has to be able to confirm the result is true rather than just plausible-sounding.</p>
+  <p class="reveal">So: real, verifiable, not hand-waved discoveries. But every one of them happened inside a problem space a human had already defined &mdash; "find a faster algorithm for <em>this</em> operation," "find a stable crystal lattice," "win at <em>this</em> board game." None of them redefined what counts as a question worth asking, the way non-Euclidean geometry or quantum mechanics did for us. AI has gotten past the human ceiling on specific, well-posed search problems. It hasn't yet invented an entirely new category of thought. That distinction &mdash; between solving inside a frame versus inventing a new frame &mdash; might be the actual line worth watching.</p>
+
+  <h2 class="reveal">Why an AI civilization might not repeat our mistakes &mdash; or might</h2>
+  <p class="reveal">Here's a distinction that I think quietly resolves half the arguments I was having with myself about this: some discoveries are <strong>convergent</strong>, and some are <strong>divergent</strong>. Mathematics and the laws of physics are convergent &mdash; they're constrained by logic and physical reality itself, not by who's doing the discovering. That's why the Pythagorean theorem shows up independently in ancient Babylon, China, India, and Greece, with no contact between any of them. A sufficiently capable AI civilization would almost certainly rediscover most of our mathematics and most of our biology, for the same reason the rainbow is there whether or not the tiger can see it.</p>
+  <p class="reveal">War, money, nation-states, racism, religion &mdash; these are divergent. They aren't discoveries about reality. They're accumulated historical decisions, contingent on who had resources first, who won a particular conflict three generations back, which crops grew well in which soil. Nothing forces convergence on those the way logic forces convergence on calculus. Two systems starting from nearly identical conditions can drift into wildly different outcomes from one early fork in the road &mdash; the same way a tiny rounding error early in a long calculation snowballs into a huge one by the end.</p>
+  <p class="reveal">That also means a hypothetical AI civilization probably wouldn't avoid humanity's mistakes just by <em>knowing</em> our history. Humans already know our own history in exhaustive detail and keep recreating the same patterns anyway, because the patterns come from structural pressure &mdash; scarcity, imperfect coordination, asymmetric information &mdash; more than from simple ignorance. There's a sobering idea in AI safety called the <strong>orthogonality thesis</strong>: intelligence and goals are independent variables. A more intelligent mind isn't automatically a kinder one. It's just a more <em>effective</em> one, at whatever it already wants. Some of the most intellectually capable humans in history were also responsible for some of its worst atrocities. "Smarter, but still wants power" isn't reassuring on its own &mdash; it might just mean faster, better-executed pursuit of the same drive.</p>
+
+  <h2 class="reveal">What it would actually look like if AI found something we can't translate</h2>
+  <p class="reveal">I pushed this as far as I could: imagine a multi-agent system trained purely on physics and resource constraints inside a simulated world &mdash; no human text, no human examples at all, just an environment and other agents to interact with &mdash; left running for years instead of weeks.</p>
+  <p class="reveal">Researchers could then go in with <strong>interpretability tools</strong> &mdash; the same techniques labs like Anthropic already use to look inside trained models &mdash; and search for stable, internal patterns the system clearly relies on heavily and that predict its behavior with real accuracy. The honest, plausible outcome isn't "we found proof of an alien reality." It's something messier: a consistent, functionally important computational structure that researchers can verify is <em>real</em> &mdash; because perturbing it changes behavior in predictable ways &mdash; but that maps onto no existing human concept and has no English word for it. Verifiable. Functional. Untranslatable. That's already happening in miniature in current interpretability research, where features get discovered, measured, and manipulated long before anyone can cleanly <em>name</em> what they represent.</p>
+  <p class="hl reveal">That outcome is less satisfying than "AI revealed a hidden layer of the universe." But it might be exactly what the tiger's version of this would look like to us from the outside &mdash; a stable, repeatable brain pattern every time it looks at the night sky, with no shared word in either species for what that pattern is doing.</p>
+
+  <h2 class="reveal">Two different bets on what AGI even is</h2>
+  <p class="reveal">It turns out there isn't agreement on what "AGI" means, and the disagreement splits almost exactly along the line this whole essay has been circling. <strong>The mainstream definition</strong> &mdash; the one Demis Hassabis at DeepMind and most of the major labs use &mdash; is that AGI is a system that exhibits "the full range of human cognitive capabilities," or, in OpenAI's reported internal agreement with Microsoft, an AI capable of generating $100 billion in annual profit. Both versions share the same underlying assumption: AGI is <em>us, but better</em>. More capable at the same kinds of tasks, faster, cheaper, broader coverage &mdash; but built on the same conceptual furniture. That's the "smarter human" bet. Anthropic, notably, mostly avoids the term altogether &mdash; Dario Amodei has called it "overhyped" and prefers "powerful AI," which is arguably the more intellectually honest move: refuse the marketing framing entirely rather than try to win the definitional argument.</p>
+  <p class="reveal"><strong>The competing bet</strong> comes from people who think that framing is the actual mistake. Yann LeCun, formerly Meta's chief AI scientist, argues that large language models &mdash; no matter how large they get &mdash; are not a path to AGI at all, not because they need more scale, but because the architecture itself is wrong for the goal. His position isn't "we need a bigger version of this." It's "this entire approach inherits a ceiling no amount of scaling removes," because it's still fundamentally pattern-matching against human-generated text. LeCun's own research direction (world models that learn from observing physical reality directly, rather than from text) is an explicit attempt to build something that isn't shaped by human language as its primary substrate.</p>
+  <p class="reveal">Shane Legg &mdash; the DeepMind co-founder who helped popularize the term AGI in the early 2000s &mdash; pushed in a related direction in early 2026, publishing a cognitive framework that separates <strong>depth</strong> (how good a system is at a specific task) from <strong>breadth</strong> (whether it can genuinely transfer to truly novel domains it wasn't trained for). The paper's finding was almost an indictment of the field's own optimism: today's models score high on depth and fail the breadth test. They're extremely good at operating inside the box they were built for, and weak at generalizing past it without being spoon-fed context first. That's a more technical, more measurable version of the exact tiger problem this essay opened with &mdash; depth without breadth is "excellent inside a closed frame," not "broke out of the frame."</p>
+  <p class="reveal">So there are at least three genuinely different bets being placed on what gets us to AGI, and they imply three different answers to whether AGI would have a human ceiling at all. <strong>Scale the current approach further</strong> &mdash; more parameters, more data, more compute, on the same transformer architecture trained on human-generated text. If this path works, the result is almost definitionally still inside human concept-space, because human-generated text <em>is</em> the training signal. It inherits the ceiling by construction. <strong>Change the substrate, not just the scale</strong> &mdash; LeCun's bet, training on direct interaction with physical or simulated reality instead of primarily on text, so the system's concepts emerge from raw experience rather than from a human-authored description of it. Whether that actually produces something outside human concept-space, or just a different path to roughly the same destination, isn't settled. <strong>Let it evolve rather than designing it</strong> &mdash; the multi-agent, self-play direction already covered. Don't specify the destination at all, just the pressure, and let strategies emerge that nobody pre-wrote. This is the path most structurally similar to how human cognition itself appeared, since evolution didn't design us top-down either.</p>
+  <p class="reveal">My honest read: only the second and third paths have any real shot at producing something without a human ceiling, because the first one is definitionally trained on the ceiling itself. But "no human ceiling" doesn't automatically mean "better" or "safer" &mdash; it might just mean a mind we're worse equipped to even evaluate, since we'd be checking its work using the only frame we have: our own.</p>
+
+  <h2 class="reveal">Not the true reality — better interfaces between realities</h2>
+  <p class="reveal">There's a nuance worth being precise about before going further, because it changes what the actual goal should be. Nobody gets raw, unmediated access to "the universe as it actually is" &mdash; not us, not a future AGI, not anything. A human experiences reality through human senses and a human nervous system. A bird experiences it partly through magnetoreception. A bee experiences it partly through ultraviolet vision. A future AI would experience it through whatever artificial senses and internal representations it was built with. Every single one of these is a model, an interface, a translation layer sitting between the observer and whatever is actually out there. None of them is reality itself. We're not missing "the real version" that some other mind has &mdash; we're all running different translations of something none of us touches directly.</p>
+  <p class="reveal">But here's where science already found a partial way around the problem, and it's worth taking seriously rather than treating the gap as hopeless: we don't actually need direct access to everything in order to know more about it. A telescope doesn't give a human eye new biological capability &mdash; it extends what the eye can register. A microscope does the same downward. A particle detector extends perception into a domain no sense organ on Earth evolved to register at all. Mathematics extends reasoning itself, letting us manipulate relationships no brain could hold in working memory unaided. None of these tools handed us "the truth." They handed us a <em>better interface</em>.</p>
+  <p class="reveal">Which suggests the actual goal isn't "build an AI that finally sees the one true reality." That framing assumes there's a final, ultimate version waiting to be unlocked, and that one privileged mind could get there. The more useful framing might be: build better and better interfaces between different partial realities &mdash; translation layers that let a human-shaped mind, an AI-shaped mind, and whatever comes after both check each other's models against the world and against each other, the way a telescope doesn't replace the eye, it talks to it.</p>
+  <p class="reveal">And the deepest part of this, the part that actually answers a question this essay never fully resolved: the history of science is, almost without exception, a list of things that were <em>already there</em>. Microbes were there before microscopes. Radio waves were there before radio receivers. Galaxies beyond our own were there before deep-field telescopes. DNA's structure was there before X-ray crystallography. Gravitational waves were rippling through spacetime for billions of years before LIGO detected the first one in 2015. The universe was never hiding any of this. We were missing the conceptual tools to even know there was something to look for.</p>
+  <p class="reveal">Which means the tiger framing this whole essay opened with might need one final correction. We're probably not "missing data the way a tiger is." We're more likely sitting exactly where every previous generation of scientists sat right before their next instrument arrived &mdash; surrounded by things that are already there, that we don't yet have a reason to suspect exist, because nothing in our current interface has ever needed to register them. Not unintelligent. Just running one particular interface, out of what might be a very large number of possible ones.</p>
+
+  <hr class="reveal">
+
+  <h2 class="reveal">The actual question underneath all of this</h2>
+  <p class="reveal">I don't think any of this was ever really about artificial general intelligence as a product, or a race between labs. The question underneath it is older and stranger: <em>is human cognition the center of mind-space, or are we one particular, accidental design among an almost unimaginably larger landscape of possible ways to think?</em></p>
+  <p class="reveal">The philosopher Nick Bostrom uses the term <strong>mind space</strong> for exactly this &mdash; the idea that human cognition occupies one small region within a vastly larger space of possible minds, and that anything we build is at risk of landing very close to our own region rather than exploring the rest of it, precisely because we're the ones doing the building, with our own concepts as the only available tools.</p>
+  <p class="reveal">History keeps demoting us from the center of things. We weren't the center of the solar system. The sun isn't the center of the galaxy. The galaxy isn't the center of the universe. Consciousness itself remains an open question &mdash; we don't know why subjective experience exists at all, or what would have to be true of a system for it to have any.</p>
+  <p class="hl reveal">The next demotion, if it's coming, probably won't be "humans aren't the smartest thing on the planet." We might already suspect that's eventually true and find a way to be at peace with it. The harder, stranger possibility is the one the tiger keeps gesturing at: that human cognition might be sitting inside its own closure right now, surrounded by truths it cannot see &mdash; not because the data isn't there, but because nothing in us has ever needed to turn it into a thought.</p>
+  <p class="reveal">We wouldn't know if that were true. That's the part that doesn't resolve. <strong>But not knowing is not the same as it being false.</strong></p>
+</article>
+
+<div class="endcap">
+  <div class="rule"></div>
+  <p>This is one of the questions I think about most &mdash; and part of why I'm building at the intersection of neurology and AI in the first place.</p>
+  <div class="ctarow">
+    <a href="index.html#about" class="btn btn-p">More about me &rarr;</a>
+    <a href="index.html#notes" class="btn btn-g">More Field Notes</a>
+  </div>
+</div>
+
+<footer>
+  <div>&copy; 2026 Reverie</div>
+  <div>Stockholm &middot; Building what comes next</div>
+</footer>
+
+<script>
+  const prog=document.getElementById('prog');
+  addEventListener('scroll',()=>{const m=document.body.scrollHeight-innerHeight;prog.style.width=(m>0?scrollY/m*100:0)+'%';},{passive:true});
+  const io=new IntersectionObserver(es=>es.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('in'),i*30);}),{threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
